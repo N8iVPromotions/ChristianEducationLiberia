@@ -165,13 +165,13 @@ h1, h2, h3, h4 {
 }
 
 .nav-logo img {
-  width: 52px;
-  height: 52px;
-  border-radius: 50%;
-  object-fit: cover;
+  width: 58px;
+  height: 58px;
+  object-fit: contain;
   transition: width var(--transition), height var(--transition);
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,.2));
 }
-#navbar.scrolled .nav-logo img { width: 42px; height: 42px; }
+#navbar.scrolled .nav-logo img { width: 46px; height: 46px; }
 
 .nav-logo-text {
   display: flex;
@@ -897,9 +897,10 @@ h1, h2, h3, h4 {
 }
 
 .footer-brand img {
-  width: 56px; height: 56px;
-  border-radius: 50%;
+  width: 72px; height: 72px;
+  object-fit: contain;
   margin-bottom: 16px;
+  filter: brightness(0) invert(1) opacity(.85);
 }
 .footer-brand p {
   font-size: .88rem;

@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300" width="300" height="300">
+  <defs>
+    <!-- Curved text paths -->
+    <path id="topArc" d="M 50,150 A 100,100 0 0,1 250,150" fill="none"/>
+
+    <!-- Globe gradient -->
+    <radialGradient id="oceanGrad" cx="45%" cy="40%" r="55%">
+      <stop offset="0%"   stop-color="#5B9BD5"/>
+      <stop offset="100%" stop-color="#2F6FAE"/>
+    </radialGradient>
+
+    <!-- Clip to globe circle -->
+    <clipPath id="globeClip">
+      <circle cx="150" cy="128" r="82"/>
+    </clipPath>
+  </defs>
+
+  <!-- ── Open Book ──────────────────────────────────────── -->
+  <g transform="translate(150,230)">
+    <!-- Left page -->
+    <path d="M-75,-18 Q-38,-28 0,-18 L0,18 Q-38,8 -75,18 Z"
+          fill="#12245E" stroke="#0D1A47" stroke-width="1"/>
+    <!-- Right page -->
+    <path d="M75,-18 Q38,-28 0,-18 L0,18 Q38,8 75,18 Z"
+          fill="#12245E" stroke="#0D1A47" stroke-width="1"/>
+    <!-- Spine highlight -->
+    <rect x="-3" y="-20" width="6" height="40" rx="2" fill="#0D1A47"/>
+    <!-- Left page lines -->
+    <line x1="-60" y1="-8"  x2="-12" y2="-13" stroke="#1E3A8A" stroke-width="1.2" opacity=".55"/>
+    <line x1="-60" y1="-1"  x2="-12" y2="-5"  stroke="#1E3A8A" stroke-width="1.2" opacity=".55"/>
+    <line x1="-60" y1=" 6"  x2="-12" y2=" 3"  stroke="#1E3A8A" stroke-width="1.2" opacity=".55"/>
+    <!-- Right page lines -->
+    <line x1="60"  y1="-8"  x2="12"  y2="-13" stroke="#1E3A8A" stroke-width="1.2" opacity=".55"/>
+    <line x1="60"  y1="-1"  x2="12"  y2="-5"  stroke="#1E3A8A" stroke-width="1.2" opacity=".55"/>
+    <line x1="60"  y1=" 6"  x2="12"  y2=" 3"  stroke="#1E3A8A" stroke-width="1.2" opacity=".55"/>
+  </g>
+
+  <!-- ── Globe base circle ──────────────────────────────── -->
+  <circle cx="150" cy="128" r="82" fill="url(#oceanGrad)"/>
+
+  <!-- ── Continents (clipped to globe) ─────────────────── -->
+  <g clip-path="url(#globeClip)" fill="#12245E" opacity=".9">
+    <!-- Africa - central -->
+    <path d="M148,78 C152,74 162,73 166,78 C170,83 172,88 170,95
+             C175,98 178,105 175,112 C180,118 178,128 172,134
+             C168,142 160,150 155,158 C150,162 148,168 148,172
+             C144,170 140,162 140,155 C136,148 134,140 136,132
+             C130,126 128,116 132,110 C128,103 130,95 136,92
+             C138,86 142,80 148,78 Z"/>
+    <!-- Morocco / NW Africa -->
+    <path d="M120,82 C126,78 134,76 138,80 C140,85 138,90 134,92
+             C130,90 124,88 120,84 Z"/>
+    <!-- Europe hint -->
+    <path d="M122,68 C128,62 138,60 142,65 C144,70 140,74 136,74
+             C130,74 124,72 122,68 Z"/>
+    <!-- Middle East -->
+    <path d="M168,88 C174,84 180,86 182,92 C184,98 180,104 174,106
+             C170,102 166,96 168,88 Z"/>
+    <!-- Arabia -->
+    <path d="M170,106 C176,104 182,108 184,116 C186,122 182,130 176,130
+             C172,126 168,118 170,106 Z"/>
+    <!-- Southern Africa extension -->
+    <path d="M148,172 C150,178 150,184 148,188 C146,184 146,178 148,172 Z"/>
+    <!-- Madagascar -->
+    <path d="M178,140 C182,138 184,144 182,150 C180,154 176,152 176,146 Z"/>
+  </g>
+
+  <!-- Globe shine overlay -->
+  <ellipse cx="128" cy="105" rx="28" ry="20"
+           fill="white" opacity=".08" transform="rotate(-20,128,105)"/>
+
+  <!-- Globe border -->
+  <circle cx="150" cy="128" r="82" fill="none" stroke="#12245E" stroke-width="2.5"/>
+
+  <!-- Latitude lines (subtle) -->
+  <g clip-path="url(#globeClip)" stroke="#12245E" stroke-width=".6" opacity=".2" fill="none">
+    <ellipse cx="150" cy="128" rx="82" ry="22"/>
+    <ellipse cx="150" cy="105" rx="75" ry="16"/>
+    <ellipse cx="150" cy="151" rx="75" ry="16"/>
+  </g>
+
+  <!-- Meridian line (subtle) -->
+  <line x1="150" y1="46" x2="150" y2="210"
+        stroke="#12245E" stroke-width=".6" opacity=".15"
+        clip-path="url(#globeClip)"/>
+
+  <!-- ── Curved text: CHRISTIAN EDUCATION IN LIBERIA ─── -->
+  <path id="curvedTop"
+        d="M 52,148 A 98,98 0 0,1 248,148"
+        fill="none"/>
+
+  <text font-family="'Arial Black', 'Arial', sans-serif"
+        font-size="15.5"
+        font-weight="900"
+        fill="#12245E"
+        letter-spacing="2.2">
+    <textPath href="#curvedTop" startOffset="50%" text-anchor="middle">
+      CHRISTIAN EDUCATION IN LIBERIA
+    </textPath>
+  </text>
+</svg>
