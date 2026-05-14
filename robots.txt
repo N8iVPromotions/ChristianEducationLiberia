@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://n8ivpromotions.github.io/ChristianEducationLiberia/sitemap.xml
