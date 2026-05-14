@@ -1,135 +1,152 @@
-/* =========================================================
-   CEL – Christian Education in Liberia  |  main.js
-   ========================================================= */
+/* =============================================================
+   CEL – main.js v2.0
+   ============================================================= */
 
-/* ── Navbar scroll behaviour ──────────────────────────── */
+/* ── Topbar + Navbar scroll ─────────────────────────────────── */
 (function () {
-  const navbar = document.getElementById('navbar');
+  const navbar  = document.getElementById('navbar');
+  const topbar  = document.getElementById('topbar');
   if (!navbar) return;
+  const isHeroPage = document.body.classList.contains('hero-page');
 
   function onScroll() {
-    if (window.scrollY > 60) {
-      navbar.classList.add('scrolled');
-    } else {
-      navbar.classList.remove('scrolled');
-    }
+    const past = window.scrollY > 60;
+    navbar.classList.toggle('scrolled', past);
+    if (topbar && isHeroPage) topbar.classList.toggle('scrolled', past);
   }
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
 })();
 
-/* ── Mobile hamburger ─────────────────────────────────── */
+/* ── Active nav link ────────────────────────────────────────── */
 (function () {
-  const hamburger = document.querySelector('.hamburger');
-  const navLinks  = document.querySelector('.nav-links');
-  if (!hamburger || !navLinks) return;
-
-  hamburger.addEventListener('click', () => {
-    hamburger.classList.toggle('open');
-    navLinks.classList.toggle('mobile-open');
-    document.body.style.overflow = navLinks.classList.contains('mobile-open') ? 'hidden' : '';
-  });
-
-  navLinks.querySelectorAll('a').forEach(link => {
-    link.addEventListener('click', () => {
-      hamburger.classList.remove('open');
-      navLinks.classList.remove('mobile-open');
-      document.body.style.overflow = '';
-    });
+  const page = window.location.pathname.split('/').pop() || 'index.html';
+  document.querySelectorAll('.nav-links a, .mobile-menu a').forEach(a => {
+    const href = a.getAttribute('href');
+    if (href && (href === page || (page === '' && href === 'index.html'))) {
+      a.classList.add('active');
+    }
   });
 })();
 
-/* ── Smooth scroll for anchor links ───────────────────── */
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-  anchor.addEventListener('click', function (e) {
-    const target = document.querySelector(this.getAttribute('href'));
-    if (!target) return;
+/* ── Dropdown menus (desktop hover + keyboard) ──────────────── */
+(function () {
+  document.querySelectorAll('.has-dropdown').forEach(li => {
+    const toggle = li.querySelector('.dropdown-toggle');
+    if (!toggle) return;
+    toggle.addEventListener('click', e => {
+      e.preventDefault();
+      const open = li.classList.contains('open');
+      document.querySelectorAll('.has-dropdown').forEach(x => x.classList.remove('open'));
+      if (!open) li.classList.add('open');
+    });
+  });
+  document.addEventListener('click', e => {
+    if (!e.target.closest('.has-dropdown'))
+      document.querySelectorAll('.has-dropdown').forEach(x => x.classList.remove('open'));
+  });
+})();
+
+/* ── Mobile menu ────────────────────────────────────────────── */
+(function () {
+  const hamburger  = document.querySelector('.hamburger');
+  const mobileMenu = document.querySelector('.mobile-menu');
+  const closeBtn   = document.querySelector('.mobile-menu-close');
+  if (!hamburger || !mobileMenu) return;
+
+  function open()  { hamburger.classList.add('open'); mobileMenu.classList.add('open'); document.body.style.overflow = 'hidden'; hamburger.setAttribute('aria-expanded','true'); }
+  function close() { hamburger.classList.remove('open'); mobileMenu.classList.remove('open'); document.body.style.overflow = ''; hamburger.setAttribute('aria-expanded','false'); }
+
+  hamburger.addEventListener('click', () => mobileMenu.classList.contains('open') ? close() : open());
+  if (closeBtn) closeBtn.addEventListener('click', close);
+  mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', close));
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+})();
+
+/* ── Smooth scroll ──────────────────────────────────────────── */
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', function (e) {
+    const t = document.querySelector(this.getAttribute('href'));
+    if (!t) return;
     e.preventDefault();
-    const offset = 80;
-    const top = target.getBoundingClientRect().top + window.scrollY - offset;
-    window.scrollTo({ top, behavior: 'smooth' });
+    window.scrollTo({ top: t.getBoundingClientRect().top + window.scrollY - 88, behavior: 'smooth' });
   });
 });
 
-/* ── IntersectionObserver: reveal on scroll ───────────── */
+/* ── Scroll reveal (IntersectionObserver) ───────────────────── */
 (function () {
-  const reveals = document.querySelectorAll('.reveal');
-  if (!reveals.length) return;
-
-  const io = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('is-visible');
-        io.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
-
-  reveals.forEach(el => io.observe(el));
+  const els = document.querySelectorAll('.reveal');
+  if (!els.length) return;
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('is-visible'); io.unobserve(e.target); } });
+  }, { threshold: 0.1, rootMargin: '0px 0px -36px 0px' });
+  els.forEach(el => io.observe(el));
 })();
 
-/* ── Animated counters ────────────────────────────────── */
+/* ── Animated counters ──────────────────────────────────────── */
 (function () {
-  const counters = document.querySelectorAll('[data-count]');
-  if (!counters.length) return;
-
-  function easeOutQuart(t) { return 1 - Math.pow(1 - t, 4); }
-
-  function animateCounter(el) {
-    const target   = parseFloat(el.dataset.count);
-    const suffix   = el.dataset.suffix || '';
-    const prefix   = el.dataset.prefix || '';
-    const decimals = el.dataset.decimals ? parseInt(el.dataset.decimals) : 0;
-    const duration = 1800;
-    const start    = performance.now();
-
-    function step(now) {
-      const elapsed  = now - start;
-      const progress = Math.min(elapsed / duration, 1);
-      const value    = easeOutQuart(progress) * target;
-      el.textContent = prefix + value.toFixed(decimals) + suffix;
-      if (progress < 1) requestAnimationFrame(step);
-    }
-    requestAnimationFrame(step);
+  const els = document.querySelectorAll('[data-count]');
+  if (!els.length) return;
+  function ease(t) { return 1 - Math.pow(1-t, 4); }
+  function run(el) {
+    const target = parseFloat(el.dataset.count);
+    const suffix = el.dataset.suffix || '';
+    const prefix = el.dataset.prefix || '';
+    const dec    = parseInt(el.dataset.decimals || 0);
+    const dur    = 1800;
+    const start  = performance.now();
+    (function step(now) {
+      const p = Math.min((now - start) / dur, 1);
+      el.textContent = prefix + (ease(p) * target).toFixed(dec) + suffix;
+      if (p < 1) requestAnimationFrame(step);
+    })(performance.now());
   }
-
-  const io = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        animateCounter(entry.target);
-        io.unobserve(entry.target);
-      }
-    });
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { run(e.target); io.unobserve(e.target); } });
   }, { threshold: 0.3 });
-
-  counters.forEach(el => io.observe(el));
+  els.forEach(el => io.observe(el));
 })();
 
-/* ── Budget bar animation ─────────────────────────────── */
+/* ── Budget bars ────────────────────────────────────────────── */
 (function () {
   const bars = document.querySelectorAll('.budget-bar');
   if (!bars.length) return;
-
-  const io = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const bar = entry.target;
-        bar.style.width = bar.dataset.width + '%';
-        io.unobserve(bar);
-      }
-    });
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.style.width = e.target.dataset.width + '%'; io.unobserve(e.target); } });
   }, { threshold: 0.3 });
-
-  bars.forEach(bar => io.observe(bar));
+  bars.forEach(b => io.observe(b));
 })();
 
-/* ── Donate amount chip selector ─────────────────────── */
+/* ── Donate chips ───────────────────────────────────────────── */
 (function () {
-  const chips = document.querySelectorAll('.donate-chip');
-  chips.forEach(chip => {
-    chip.addEventListener('click', () => {
-      chips.forEach(c => c.classList.remove('active'));
-      chip.classList.add('active');
+  document.querySelectorAll('.donate-chip, .impact-chip').forEach(chip => {
+    chip.addEventListener('click', function () {
+      const group = this.closest('.donate-chips, .impact-chips');
+      if (group) group.querySelectorAll('.donate-chip, .impact-chip').forEach(c => c.classList.remove('active'));
+      this.classList.add('active');
     });
   });
+})();
+
+/* ── FAQ accordion ──────────────────────────────────────────── */
+(function () {
+  document.querySelectorAll('.accordion-trigger').forEach(btn => {
+    btn.addEventListener('click', function () {
+      const body = this.nextElementSibling;
+      const open = this.classList.contains('open');
+      this.closest('.accordion-list')?.querySelectorAll('.accordion-trigger').forEach(b => {
+        b.classList.remove('open');
+        b.nextElementSibling.classList.remove('open');
+      });
+      if (!open) { this.classList.add('open'); body.classList.add('open'); }
+    });
+  });
+})();
+
+/* ── Back to top ────────────────────────────────────────────── */
+(function () {
+  const btn = document.getElementById('back-top');
+  if (!btn) return;
+  window.addEventListener('scroll', () => btn.classList.toggle('visible', window.scrollY > 400), { passive: true });
+  btn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 })();
